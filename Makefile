@@ -16,7 +16,7 @@ MPY_DIR ?= ../../..
 endif
 
 MOD    := mp-libmad_$(ARCH)
-SRC    := module.c $(wildcard libmad/*.c)
+SRC    := module.c natglue.c $(wildcard libmad/*.c)
 SRC    := $(filter-out libmad/minimad.c, ${SRC})
 CFLAGS += -Wno-unused-variable ${MAD_CFLAGS}
 
