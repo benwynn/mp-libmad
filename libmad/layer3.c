@@ -2526,14 +2526,6 @@ int mad_layer_III(struct mad_stream *stream, struct mad_frame *frame)
 
   /* allocate Layer III dynamic structures */
 
-  if (stream->main_data == 0) {
-    stream->main_data = malloc(MAD_BUFFER_MDLEN);
-    if (stream->main_data == 0) {
-      stream->error = MAD_ERROR_NOMEM;
-      return -1;
-    }
-  }
-
   nch = MAD_NCHANNELS(header);
   si_len = (header->flags & MAD_FLAG_LSF_EXT) ?
     (nch == 1 ? 9 : 17) : (nch == 1 ? 17 : 32);
@@ -2618,13 +2610,13 @@ int mad_layer_III(struct mad_stream *stream, struct mad_frame *frame)
     }
     else {
       mad_bit_init(&ptr,
-		   *stream->main_data + stream->md_len - si.main_data_begin);
+		   stream->main_data + stream->md_len - si.main_data_begin);
 
       if (md_len > si.main_data_begin) {
 	assert(stream->md_len + md_len -
 	       si.main_data_begin <= MAD_BUFFER_MDLEN);
 
-	memcpy(*stream->main_data + stream->md_len,
+	memcpy(stream->main_data + stream->md_len,
 	       mad_bit_nextbyte(&stream->ptr),
 	       frame_used = md_len - si.main_data_begin);
 	stream->md_len += frame_used;
@@ -2660,7 +2652,7 @@ int mad_layer_III(struct mad_stream *stream, struct mad_frame *frame)
   /* preload main_data buffer with up to 511 bytes for next frame(s) */
 
   if (frame_free >= next_md_begin) {
-    memcpy(*stream->main_data,
+    memcpy(stream->main_data,
 	   stream->next_frame - next_md_begin, next_md_begin);
     stream->md_len = next_md_begin;
   }
@@ -2673,15 +2665,15 @@ int mad_layer_III(struct mad_stream *stream, struct mad_frame *frame)
 	extra = next_md_begin - frame_free;
 
       if (extra < stream->md_len) {
-	memmove(*stream->main_data,
-		*stream->main_data + stream->md_len - extra, extra);
+	memmove(stream->main_data,
+		stream->main_data + stream->md_len - extra, extra);
 	stream->md_len = extra;
       }
     }
     else
       stream->md_len = 0;
 
-    memcpy(*stream->main_data + stream->md_len,
+    memcpy(stream->main_data + stream->md_len,
 	   stream->next_frame - frame_free, frame_free);
     stream->md_len += frame_free;
   }
