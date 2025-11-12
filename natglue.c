@@ -4,9 +4,9 @@
  * exported function table 'mp_fun_table' 
  */
 
-#include "py/dynruntime.h"
-
 #include <unistd.h>
+#include "py/dynruntime.h"
+#include "libmad/config.h"
 
 /*
 void *malloc(size_t n) {
@@ -25,6 +25,15 @@ void free(void *ptr) {
 }
 */
 
+#ifndef NDEBUG
+void panic(char *);
+void __assert_func(const char *file, int line, const char *func, const char *failedexpr) {
+  mp_fun_table.raise_msg(
+    mp_fun_table.load_global(MP_QSTR_AssertionError),
+    "Assertion Failed");
+  panic("Assertion Failed");
+}
+#endif
 void *memcpy(void *dst, const void *src, size_t n) {
   return mp_fun_table.memmove_(dst, src, n);
 }
