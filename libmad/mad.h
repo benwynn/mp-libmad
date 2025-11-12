@@ -895,11 +895,6 @@ void mad_synth_frame(struct mad_synth *, struct mad_frame const *);
 # define LIBMAD_DECODER_H
 
 
-enum mad_decoder_mode {
-  MAD_DECODER_MODE_SYNC  = 0,
-  MAD_DECODER_MODE_ASYNC
-};
-
 enum mad_flow {
   MAD_FLOW_CONTINUE = 0x0000,	/* continue normally */
   MAD_FLOW_STOP     = 0x0010,	/* stop decoding normally */
@@ -908,15 +903,7 @@ enum mad_flow {
 };
 
 struct mad_decoder {
-  enum mad_decoder_mode mode;
-
   int options;
-
-  struct {
-    long pid;
-    int in;
-    int out;
-  } async;
 
   struct {
     struct mad_stream stream;
@@ -954,7 +941,7 @@ int mad_decoder_finish(struct mad_decoder *);
 # define mad_decoder_options(decoder, opts)  \
     ((void) ((decoder)->options = (opts)))
 
-int mad_decoder_run(struct mad_decoder *, enum mad_decoder_mode);
+int mad_decoder_run(struct mad_decoder *);
 int mad_decoder_message(struct mad_decoder *, void *, unsigned int *);
 
 # endif

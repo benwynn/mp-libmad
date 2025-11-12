@@ -42,11 +42,6 @@
 #  define OPT_SSO
 # endif
 
-# if defined(HAVE_UNISTD_H) && defined(HAVE_WAITPID) &&  \
-    defined(HAVE_FCNTL) && defined(HAVE_PIPE) && defined(HAVE_FORK)
-#  define USE_ASYNC
-# endif
-
 # if !defined(HAVE_ASSERT_H)
 #  if defined(NDEBUG)
 #   define assert(x)	/* nothing */
