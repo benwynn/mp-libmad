@@ -27,3 +27,13 @@ CFLAGS += -Wno-unused-variable ${MAD_CFLAGS}
 
 include ${MPY_DIR}/py/dynruntime.mk
 
+.upload: mplibmad_$(ARCH).mpy
+	mpremote cp mplibmad_$(ARCH).mpy :lib/mplibmad.mpy
+	touch .upload
+
+.PHONY: test
+
+test: .upload
+	mpremote run test.py
+
+
